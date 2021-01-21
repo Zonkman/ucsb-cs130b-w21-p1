@@ -34,6 +34,7 @@ void Solve() {
 
     std::cout << compString << std::endl;
     
+    delete[] compString;
     delete[] beliefCurr;
 }
 
