@@ -50,11 +50,11 @@ void Solve() {
         red[i] = true; isInQueue[i] = true;
     }
     bool noChanges = true;
-    bool dirty = true;
+    int dirty = 1;
     bool redToBlueMode = true;
 
-    while (dirty) {
-        dirty = false;
+    while (dirty > 0) {
+        --dirty;
         for (int i = 0; i < soldierCount; ++i) {
 	    if (red[i] != redToBlueMode) { continue; }
             
@@ -66,7 +66,7 @@ void Solve() {
 
 	    if ((redEnemies >= 2) == redToBlueMode) {
 		noChanges = false;
-	        dirty = true;
+	        dirty = 2;
 		red[i] = !red[i];
 	    }
 	}
