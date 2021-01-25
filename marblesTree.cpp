@@ -32,16 +32,12 @@ void CountAndSetTargets(Box& b, Box* boxList) {
 
 // move the cheapest marbles "up" to the parent of this node.
 // the queue order always finds the lower cost marbles first.
-// O(n^2)...
+// O(n^2)?
 void Leech(Box& b, int boxIdx, Box* boxList, int& moveCounter) {
     std::queue<int> closest;
     std::queue<int> cost;
-    std::queue<std::vector<int>> path;
     closest.push(boxIdx);
     cost.push(1);
-    std::vector<int> firstPath;
-    //firstPath.push_back(boxIdx);
-    path.push(firstPath);
 
     int marblesToErase = b.currentSubTotal - b.targetSubTotal;
 
@@ -49,24 +45,15 @@ void Leech(Box& b, int boxIdx, Box* boxList, int& moveCounter) {
 	int cid = closest.front();
 	Box& c = boxList[cid]; closest.pop();
 	int thisCost = cost.front(); cost.pop();
-	std::vector<int> myPath(path.front()); path.pop();
         
 	if (c.marbles > 0) {
 	    if (marblesToErase > c.marbles) {
 	        marblesToErase -= c.marbles;
 		moveCounter += thisCost*c.marbles;
-		for (int i = 0; i < myPath.size(); ++i) {
-		    boxList[myPath[i]].currentSubTotal -= c.marbles;
-		}
-		c.currentSubTotal -= c.marbles;
 		c.marbles = 0;
 	    }
 	    else {
 		c.marbles -= marblesToErase;
-		for (int i = 0; i < myPath.size(); ++i) {
-		    boxList[myPath[i]].currentSubTotal -= marblesToErase;
-		}
-		c.currentSubTotal -= marblesToErase;
 	        moveCounter += thisCost*marblesToErase;
 		//marblesToErase = 0;
 		break;
@@ -76,9 +63,6 @@ void Leech(Box& b, int boxIdx, Box* boxList, int& moveCounter) {
 	for (int i = 0; i < c.children.size(); ++i) {
 	    closest.push(c.children[i]);
 	    cost.push(thisCost + 1);
-	    std::vector<int> newPath(myPath);
-	    newPath.push_back(cid);
-	    path.push(newPath);
 	}
     }
 
@@ -112,11 +96,10 @@ void Redistribute(Box& b, Box* boxList, int& moveCounter) {
 	c.currentSubTotal = c.targetSubTotal;
     }
 
-    // b.marbles = 1;
-    
-    
+    // b.marbles = 1; 
 
     for (int i = 0; i < b.children.size(); ++i) {
+	CountAndSetTargets(boxList[b.children[i]], boxList);
         Redistribute(boxList[b.children[i]], boxList, moveCounter);
     }
 }
