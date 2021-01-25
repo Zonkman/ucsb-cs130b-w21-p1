@@ -79,13 +79,14 @@ bool Solve() {
     int boxCount; std::cin >> boxCount;
     if (boxCount == 0) { return true; }
 
-    int nothing;
+    int vertexNumber;
     Box boxList[boxCount];
     bool notRootList[boxCount] = {false};
     for (int i = 0; i < boxCount; ++i) {
-        boxList[i] = Box();
-	Box& b = boxList[i];
-	std::cin >> nothing; // burn vertex number. we don't need it.
+	std::cin >> vertexNumber;
+	--vertexNumber;
+	boxList[vertexNumber] = Box();
+	Box& b = boxList[vertexNumber];
 	std::cin >> b.marbles;
 	std::cin >> b.childCount;
 	for (int j = 0; j < b.childCount; ++j) {
