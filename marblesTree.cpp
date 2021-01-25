@@ -32,41 +32,38 @@ void CountAndSetTargets(Box& b, Box* boxList) {
 
 // move the cheapest marbles "up" to the parent of this node.
 // the queue order always finds the lower cost marbles first.
-// O(n^2)?
-void Leech(Box& b, int boxIdx, Box* boxList, int& moveCounter) {
-    std::queue<int> closest;
-    std::queue<int> cost;
-    closest.push(boxIdx);
-    cost.push(1);
-
+// O(n)
+void Leech(Box& b, Box* boxList, int& moveCounter) {
     int marblesToErase = b.currentSubTotal - b.targetSubTotal;
+    std::queue<Box*> boxQueue;
+    std::queue<int> costQueue;
+    boxQueue.push(&b);
+    costQueue.push(1);
 
-    while (!closest.empty() /* ??? */ && marblesToErase > 0) {
-	int cid = closest.front();
-	Box& c = boxList[cid]; closest.pop();
-	int thisCost = cost.front(); cost.pop();
-        
-	if (c.marbles > 0) {
-	    if (marblesToErase > c.marbles) {
-	        marblesToErase -= c.marbles;
-		moveCounter += thisCost*c.marbles;
-		c.marbles = 0;
-	    }
-	    else {
-		c.marbles -= marblesToErase;
-	        moveCounter += thisCost*marblesToErase;
-		//marblesToErase = 0;
-		break;
-	    }
-	}
+    while (!boxQueue.empty()) {
+        Box& c = (*(boxQueue.front())); boxQueue.pop();
+	int cost = costQueue.front(); costQueue.pop();
 
-	for (int i = 0; i < c.children.size(); ++i) {
-	    closest.push(c.children[i]);
-	    cost.push(thisCost + 1);
-	}
+        if (c.marbles > c.targetSubTotal) {
+	    int toRemove = c.marbles - c.targetSubTotal;
+            c.marbles -= toRemove;
+	    moveCounter += toRemove*cost;
+	    marblesToErase -= toRemove;
+	    if (marblesToErase < 0) {
+	        c.marbles += -marblesToErase;
+		moveCounter -= -marblesToErase*cost;
+		marblesToErase = 0;
+	    }
+	    if (marblesToErase == 0) {
+	        break;
+	    }
+        }
+
+        for (int i = 0; i < c.children.size(); ++i) {
+            boxQueue.push(&boxList[c.children[i]]);
+            costQueue.push(cost + 1);
+        }
     }
-
-
 }
 
 // O(n^2). Maybe there is a way to do better.
@@ -82,9 +79,8 @@ void Redistribute(Box& b, Box* boxList, int& moveCounter) {
     }
 
     // somehow, find the cheapest marbles and "bring them to this root."
-    for (int i = 0; i < overfunded.size(); ++i) { 
-	int boxIdx = b.children[overfunded[i]];
-        Leech(boxList[boxIdx], boxIdx, boxList, moveCounter);
+    for (int i = 0; i < overfunded.size(); ++i) {
+        Leech(boxList[b.children[overfunded[i]]], boxList, moveCounter);
     }
 
     // "place them into" the trees that are below their target.
@@ -146,10 +142,16 @@ bool Solve() {
 
 int main(int argc, char** argv) {
     
+    //std::ifstream in("test.txt");
+    //std::streambuf *cinbuf = std::cin.rdbuf(); //save old buf
+    //std::cin.rdbuf(in.rdbuf()); //redirect std::cin to in.txt!
+
     for (int i = 0; i < 10; ++i) {
         bool end = Solve();
 	if (end) { break; }
     }
+
+    //std::cin.rdbuf(cinbuf);
 
     return 0;
 }
