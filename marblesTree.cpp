@@ -32,7 +32,7 @@ void CountAndSetTargets(Box& b, Box* boxList) {
 
 // move the cheapest marbles "up" to the parent of this node.
 // the queue order always finds the lower cost marbles first.
-// O(n)
+// O(n)?
 void Leech(Box& b, int boxIdx, Box* boxList, int& moveCounter) {
     std::queue<int> closest;
     std::queue<int> cost;
@@ -49,10 +49,12 @@ void Leech(Box& b, int boxIdx, Box* boxList, int& moveCounter) {
 	    if (marblesToErase > c.marbles) {
 	        marblesToErase -= c.marbles;
 		moveCounter += thisCost*c.marbles;
+		c.currentSubTotal -= c.marbles;
 		c.marbles = 0;
 	    }
 	    else {
 		c.marbles -= marblesToErase;
+		c.currentSubTotal -= marblesToErase;
 	        moveCounter += thisCost*marblesToErase;
 		//marblesToErase = 0;
 		break;
@@ -96,6 +98,9 @@ void Redistribute(Box& b, Box* boxList, int& moveCounter) {
     }
 
     // b.marbles = 1;
+    
+    
+
     for (int i = 0; i < b.children.size(); ++i) {
         Redistribute(boxList[b.children[i]], boxList, moveCounter);
     }
