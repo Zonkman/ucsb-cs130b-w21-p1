@@ -38,7 +38,8 @@ void MoveUp(Box& curr, Box& parent, Box* boxList, int& moveCounter) {
 
     int excess = curr.currentSubTotal - curr.targetSubTotal;
     if (excess > 0) {
-        curr.marbles -= excess;
+        curr.marbles -= excess; // these never become negative
+	curr.currentSubTotal -= excess;
 	parent.marbles += excess;
 	moveCounter += excess;
     }
@@ -50,8 +51,9 @@ void MoveDown(Box& curr, Box* boxList, int& moveCounter) {
         Box& child = boxList[curr.children[i]];
 	int wanted = child.targetSubTotal - child.currentSubTotal;
 	if (wanted > 0) {
-	    curr.marbles -= wanted;
+	    curr.marbles -= wanted; // these never become negative
 	    child.marbles += wanted;
+	    child.currentSubTotal += wanted;
 	    moveCounter += wanted;
 	}
 
@@ -64,13 +66,11 @@ void MoveDown(Box& curr, Box* boxList, int& moveCounter) {
 void Redistribute(Box* boxList, int& moveCounter) {
     Box& b = boxList[0];
 
-    //find out which subtrees have too few or too many marbles.
+    //all the excess marbles move to the root
     for (int i = 0; i < b.children.size(); ++i) {
         Box& child = boxList[b.children[i]];
         MoveUp(child, b, boxList, moveCounter);
     }
-
-    CountAndSetTargets(b, boxList);
 
     MoveDown(b, boxList, moveCounter);
 }
@@ -91,6 +91,7 @@ bool Solve() {
 	    int childIdx; std::cin >> childIdx;
 	    b.children.push_back(childIdx - 1);
 	}
+	std::cin.ignore(10000,'\n');
     }
 
     CountAndSetTargets(boxList[0], boxList);
