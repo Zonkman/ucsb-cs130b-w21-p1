@@ -44,8 +44,11 @@ void Solve() {
 
     // special: if everyone remains red, there is only one group. don't print the blue group.
     
-    bool red[soldierCount] = {true};
-    bool isInQueue[soldierCount] = {true};
+    bool red[soldierCount];
+    bool isInQueue[soldierCount];
+    for (int i = 0; i < soldierCount; ++i) {
+        red[i] = true; isInQueue[i] = true;
+    }
     bool noChanges = true;
     std::queue<int> dirty;
     for (int i = 0; i < soldierCount; ++i) { dirty.push(i); }
@@ -85,7 +88,11 @@ void Solve() {
 
     if (noChanges) {
         std::cout << "1" << std::endl;
-	for (int i = 0; i < soldierCount; ++i) { std::cout << i << std::endl; }
+	for (int i = 0; i < soldierCount; ++i) { 
+	    std::cout << i; 
+            if (i != soldierCount - 1) { std::cout << " "; }
+	}
+	std::cout << std::endl;
 	return;
     }
 
