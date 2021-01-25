@@ -63,8 +63,8 @@ void MoveDown(Box& curr, Box* boxList, int& moveCounter) {
 }
 
 //O(n)!!!
-void Redistribute(Box* boxList, int& moveCounter) {
-    Box& b = boxList[0];
+void Redistribute(Box* boxList, int& root, int& moveCounter) {
+    Box& b = boxList[root];
 
     //all the excess marbles move to the root
     for (int i = 0; i < b.children.size(); ++i) {
@@ -81,6 +81,7 @@ bool Solve() {
 
     int nothing;
     Box boxList[boxCount];
+    bool notRootList[boxCount] = {false};
     for (int i = 0; i < boxCount; ++i) {
         boxList[i] = Box();
 	Box& b = boxList[i];
@@ -90,14 +91,19 @@ bool Solve() {
 	for (int j = 0; j < b.childCount; ++j) {
 	    int childIdx; std::cin >> childIdx;
 	    b.children.push_back(childIdx - 1);
+	    notRootList[childIdx] = true; // child cannot be the root.
 	}
-	std::cin.ignore(10000,'\n');
     }
 
-    CountAndSetTargets(boxList[0], boxList);
+    int root = -1;
+    for (int i = 0; i < boxCount; ++i) {
+        if (!notRootList[i]) { root = i; break; }
+    }
+
+    CountAndSetTargets(boxList[root], boxList);
 
     int moveCounter = 0;
-    Redistribute(boxList, moveCounter);
+    Redistribute(boxList, root, moveCounter);
 
     std::cout << moveCounter << std::endl;
 
