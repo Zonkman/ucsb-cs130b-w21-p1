@@ -50,40 +50,28 @@ void Solve() {
         red[i] = true; isInQueue[i] = true;
     }
     bool noChanges = true;
-    std::queue<int> dirty;
-    for (int i = 0; i < soldierCount; ++i) { dirty.push(i); }
+    bool dirty = true;
+    bool redToBlueMode = true;
 
-    while (!dirty.empty()) {
-        int curr = dirty.front(); dirty.pop(); 
-	isInQueue[curr] = false;
-        int enemiesRedCount = 0;
+    while (dirty) {
+        dirty = false;
+        for (int i = 0; i < soldierCount; ++i) {
+	    if (red[i] != redToBlueMode) { continue; }
+            
+	    int redEnemies = 0;
+	    for (int j = 0; j < adjacency[i].size(); ++j) {
+	        int enemy = adjacency[i][j];
+		if (red[enemy]) { ++redEnemies; }
+	    }
 
-	for (int i = 0; i < adjacency[curr].size(); ++i) {
-	    int enemy = adjacency[curr][i];
-	    if (red[enemy]) { ++enemiesRedCount; }
-	}
-
-	bool thisChanged = false;
-
-	if (enemiesRedCount >= 2) {
-	    if (red[curr]) { thisChanged = true; }
-	    red[curr] = false;
-	}
-	else {
-	    if (!red[curr]) { thisChanged = true; }
-	    red[curr] = true;
-	}
-
-	if (thisChanged) {
-	    noChanges = false;
-	    for (int i = 0; i < adjacency[curr].size(); ++i) {
-	        int enemy = adjacency[curr][i];
-		if (!isInQueue[enemy]) {
-		    dirty.push(enemy);
-		    isInQueue[enemy] = true;
-		}
+	    if ((redEnemies >= 2) == redToBlueMode) {
+		noChanges = false;
+	        dirty = true;
+		red[i] = !red[i];
 	    }
 	}
+
+	redToBlueMode = !redToBlueMode;
     }
 
     if (noChanges) {
