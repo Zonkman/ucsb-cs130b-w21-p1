@@ -105,11 +105,12 @@ bool Solve() {
     int boxCount; std::cin >> boxCount;
     if (boxCount == 0) { return true; }
 
+    int nothing;
     Box boxList[boxCount];
     for (int i = 0; i < boxCount; ++i) {
         boxList[i] = Box();
 	Box& b = boxList[i];
-	std::cin.ignore(7,' '); // burn vertex number. we don't need it.
+	std::cin >> nothing; // burn vertex number. we don't need it.
 	std::cin >> b.marbles;
 	std::cin >> b.childCount;
 	for (int j = 0; j < b.childCount; ++j) {
