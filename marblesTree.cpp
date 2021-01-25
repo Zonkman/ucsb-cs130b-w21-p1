@@ -92,7 +92,7 @@ bool Solve() {
 	for (int j = 0; j < b.childCount; ++j) {
 	    int childIdx; std::cin >> childIdx;
 	    b.children.push_back(childIdx - 1);
-	    notRootList[childIdx] = true; // child cannot be the root.
+	    notRootList[childIdx - 1] = true; // child cannot be the root.
 	}
     }
 
