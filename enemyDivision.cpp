@@ -15,12 +15,12 @@ void Solve() {
 	std::cin >> enemyA >> enemyB;
 	--enemyA; --enemyB;
 
-	bool alreadyAdded = false;
+	/*bool alreadyAdded = false;
 	for (int j = 0; j < adjacency[enemyA].size(); ++j) {
 	    if (adjacency[enemyA][j] == enemyB) { alreadyAdded = true; break; }
 	}
 
-	if (alreadyAdded) { continue; }
+	if (alreadyAdded) { continue; }*/
 
 	adjacency[enemyA].push_back(enemyB);
 	adjacency[enemyB].push_back(enemyA);
@@ -88,7 +88,7 @@ void Solve() {
     if (noChanges) {
         std::cout << "1" << std::endl;
 	for (int i = 0; i < soldierCount; ++i) { 
-	    std::cout << i; 
+	    std::cout << (i + 1); 
             if (i != soldierCount - 1) { std::cout << " "; }
 	}
 	std::cout << std::endl;
