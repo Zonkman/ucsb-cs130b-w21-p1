@@ -67,7 +67,7 @@ void Solve() {
         bool thisChanged = false;
 
         if (enemiesSameCount >= 2) {
-            if (red[curr]) { thisChanged = true; }
+            thisChanged = true;
             red[curr] = !red[curr];
         }
 
