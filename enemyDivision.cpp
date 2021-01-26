@@ -14,6 +14,14 @@ void Solve() {
         int enemyA, enemyB;
 	std::cin >> enemyA >> enemyB;
 	--enemyA; --enemyB;
+
+	bool alreadyAdded = false;
+	for (int j = 0; j < adjacency[enemyA].size(); ++j) {
+	    if (adjacency[enemyA][j] == enemyB) { alreadyAdded = true; break; }
+	}
+
+	if (alreadyAdded) { continue; }
+
 	adjacency[enemyA].push_back(enemyB);
 	adjacency[enemyB].push_back(enemyA);
     }
@@ -64,14 +72,8 @@ void Solve() {
             if (red[enemy] == red[curr]) { ++enemiesSameCount; }
         }
 
-        bool thisChanged = false;
-
         if (enemiesSameCount >= 2) {
-            thisChanged = true;
             red[curr] = !red[curr];
-        }
-
-        if (thisChanged) {
             noChanges = false;
             for (int i = 0; i < adjacency[curr].size(); ++i) {
                 int enemy = adjacency[curr][i];
